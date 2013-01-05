@@ -31,6 +31,9 @@
         this.STAGE_WIDTH = 800;
         this.STAGE_HEIGHT = 800;
 
+        this.end_stage;
+        this.end_layer;
+
         this.wait_time = null;
     };
 
@@ -126,8 +129,58 @@
         // add the layer to the stage
         this.stage.add(this.layer);
 
+        this.drawTrialEndPic();
 
     }
+
+    Test.prototype.drawTrialEndPic = function() {
+        // draw
+        this.end_stage = new Kinetic.Stage({
+            container: 'end_container',
+            width: this.STAGE_WIDTH,
+            height: this.STAGE_HEIGHT
+        });
+
+        var line_width = 20, line_height = 180,
+            line_gap = 30, x = 180, y = 50;
+
+        this.end_layer = new Kinetic.Layer();
+
+            var group = new Kinetic.Group({
+                x: x ,
+                y: y ,
+                id: 'end_trial',
+                visible: true
+            });
+        for ( var i=0;i<3;i++) {
+
+            // 竖线
+            var rectV = new Kinetic.Rect({
+                x: x + line_gap + i*(line_width + line_gap),
+                y: y,
+                width: line_width,
+                height: line_height,
+                fill: 'black'
+            });
+            group.add(rectV);
+
+            // 横线
+            var rectH = new Kinetic.Rect({
+                x: x,
+                y: y + line_gap + i*(line_width + line_gap),
+                width: line_height,
+                height: line_width,
+                fill: 'black'
+            });
+            group.add(rectH);
+        }
+
+
+            this.end_layer.add(group);
+        
+        // add the layer to the stage
+        this.end_stage.add(this.end_layer);
+    }   
 
     // 随机获取set
     Test.prototype.getTrialSet = function() {
@@ -171,7 +224,7 @@
         // step 1 +
         this.cur_trial_step = this.TRIAL_STEP_1;
         $('#trial_front').show();
-        $("#trial_front").delay(this.TRIAL_STEP_1_WAIT_TIME).hide(500, function() {
+        $("#trial_front").delay(this.TRIAL_STEP_1_WAIT_TIME).fadeOut('fast', function() {
             // step 2 blank
             test.cur_trial_step = test.TRIAL_STEP_2;
 
@@ -215,7 +268,7 @@
         // step 4 show #
         this.cur_trial_step = test.TRIAL_STEP_4;
         $("#trial_end").show();
-        $("#trial_end").delay(this.TRIAL_STEP_4_WAIT_TIME).hide(500, function() {
+        $("#trial_end").delay(this.TRIAL_STEP_4_WAIT_TIME).fadeOut('fast', function() {
             // show next 
             test.cur_trial_idx = test.cur_trial_idx + 1;
             if ( test.cur_trial_idx >= test.trial_set.length ) {
