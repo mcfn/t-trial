@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>test</title>
+		<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+		<link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css">
+		<link rel="stylesheet" type="text/css" href="css/app.css">
+		<link rel="stylesheet" type="text/css" href="lib/smoke.css">
+	</head>
+	<body>
+		<div class='container container-fluid' style='width:900px;'>
+			<div id="start" style='padding:0px; margin:0;border:0px;text-align:center;padding-top:200px;'>	
+				
+				<a id='start_btn' href='#' onclick='return false;' class='btn btn-primary'>开始测试</a>
+			</div>
+
+			<div id="trial" style='padding:0px; margin:0;border:0px;'>	
+				 <div id="container"></div>
+				 <div id="trial_front" style='text-align:center;font-size:200px;margin-top:200px;'>+</div>
+				 <div id="trial_end" style='text-align:center;font-size:200px;margin-top:200px;'>#</div>
+			</div>
+
+			<div id="result" style='padding:0px; margin:0;border:0px;text-align:center;padding-top:200px;'>	
+				<div id="result_table"></div>
+				<div>
+					<a id='start_btn' href='#' onclick='test.init();return false;' class='btn btn-primary'>重新测试</a>
+				</div>
+			</div>
+			<div id="tmp"></div>
+		</div>
+
+	</body>
+	
+	<script type="text/javascript" src="lib/jquery.js"></script>
+	<script type="text/javascript" src="lib/kinetic-v4.2.0.min.js"></script>
+    <script src="test.js"></script>
+    <script src="data.js"></script>
+	<script src="client.js"></script>
+	<!--
+	<script src="render.js"></script>
+	<script src="controller.js"></script>
+    <script src="test.js"></script>
+	<script src="client.js"></script>
+	-->
+
+
+	<script type="text/javascript">
+	$(function(){
+
+		test.init();
+		$('#start_btn').click(function(){
+			test.start();
+		});
+	});
+	$(document).keydown(function(event){ 
+        console.log(event.keyCode); 
+
+        if ( test.cur_trial_step == test.TRIAL_STEP_3 ) {
+        	if ( event.keyCode == 49 || event.keyCode == 50 
+        		|| event.keyCode == 48 ) {
+	        	test.trialEnd(event.keyCode - 48);
+	        }
+	    }
+    });
+	// IE version check
+	if ( $.browser.msie&&($.browser.version == "6.0" || $.browser.version == "5.0" || $.browser.version == "7.0" ||
+			$.browser.version == "8.0") ) {
+		alert('Please use IE9+,Chrome,Firefox,Safari for better HTML5 support');
+	} 
+	</script>
+	
+</html>
