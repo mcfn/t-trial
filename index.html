@@ -17,9 +17,15 @@
 
 			<div id="trial" style='padding:0px; margin:0;border:0px;'>	
 				 <div id="container"></div>
-				 <div id="trial_front" style='text-align:center;font-size:200px;margin-top:350px;'>+</div>
-				 <div id="trial_end" >
-				 	<div id="end_container"></div>
+				 <div id="trial_front" style='text-align:center'>
+				 	<div id="front_container">
+				 		<img id='front_pic' src='img/pic01.png' style='width:25px'/>
+				 	</div>
+				 </div>
+				 <div id="trial_end" style='text-align:center'>
+				 	<div id="end_container">
+				 		<img id='end_pic' src='img/pic02.png' style='width:125px'/>
+				 	</div>
 				</div>
 				 
 			</div>
@@ -28,7 +34,7 @@
 			<div id="result" style='padding:0px; margin:0;border:0px;text-align:center;padding-top:200px;'>	
 				<div id="result_table"></div>
 				<div>
-					<a id='start_btn' href='#' onclick='test.init();return false;' class='btn btn-primary'>重新测试</a>
+					<a id='start_btn' href='#' onclick='window.location.reload();return false;' class='btn btn-primary'>重新测试</a>
 				</div>
 			</div>
 			<div id="tmp"></div>
@@ -73,35 +79,5 @@
 	} 
 	</script>
 
-	<script type="text/javascript">
-		// draw
-        var stage = new Kinetic.Stage({
-            container: 'end_container',
-            width: this.STAGE_WIDTH,
-            height: this.STAGE_HEIGHT
-        });
-
-        var layer = new Kinetic.Layer();
-
-
-        var group = new Kinetic.Group({
-            x: x ,
-            y: y ,
-            id: 'end_pic',
-            visible: false
-            });
-
-            // 竖线
-            var rectV = new Kinetic.Rect({
-                x: cur_trial.hline_length/2 - cur_trial.line_width/2,
-                y: 0,
-                width: cur_trial.line_width,
-                height: cur_trial.vline_length,
-                fill: cur_trial.line_color
-            });
-            group.add(rectV);
-
-
-	</script>
 	
 </html>

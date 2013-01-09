@@ -8,10 +8,11 @@
         
         this.TRIALS_SIZE = 10; // 每次测试trial的数量
         this.isRandomTrial = true; // true表示随机选取trial测试，false表示不随机，顺序选取
-        this.TRIAL_STEP_1_WAIT_TIME = 5000; // 单位ms，step 1 '+'的等待时间
+        this.TRIAL_STEP_1_WAIT_TIME = 1000; // 单位ms，step 1 '+'的等待时间
         this.TRIAL_STEP_2_WAIT_TIME = 500; // 单位ms,  step 2 空白时间
         this.TRIAL_STEP_3_WAIT_TIME = 5000; // 单位ms, step 3, trial图形显示的等待时间
-        this.TRIAL_STEP_4_WAIT_TIME = 5000; // 单位ms, step 4, '#'的等待时间 
+        this.TRIAL_STEP_4_WAIT_TIME = 1000; // 单位ms, step 4, '#'的等待时间 
+        this.TRIAL_STEP_5_WAIT_TIME = 1000; // 单位ms, step 4, '#'的等待时间 
 
         this.TRIAL_STEP_1 = 0; // show +
         this.TRIAL_STEP_2 = 1; // show blank
@@ -28,11 +29,28 @@
         // draw
         this.stage;
         this.layer;
-        this.STAGE_WIDTH = 800;
-        this.STAGE_HEIGHT = 800;
+        // 画面宽度
+        this.STAGE_WIDTH = 900;
+        this.STAGE_HEIGHT = 600;
+
+        // + 线条宽度，高度
+        this.FRONT_LINE_HEIGHT = 60;
+        this.FRONT_LINE_WIDTH = 13;
+
+        // # 线条宽度，长度
+        this.END_LINE_HEIGHT = 60;
+        this.END_LINE_WIDTH = 3;
+
+        // + 大小
+        this.FRONT_PIC_SIZE = 125;
+        // # 大小
+        this.END_PIC_SIZE = 125;
 
         this.end_stage;
         this.end_layer;
+
+        this.front_stage;
+        this.front_layer;
 
         this.wait_time = null;
     };
@@ -40,15 +58,26 @@
     // 初始化trial数据
     Test.prototype.init = function (nums) {
 
+        this.STAGE_HEIGHT = screen.availHeight; //document.body.clientHeight;
+        if ( screen.availWidth < this.STAGE_WIDTH ) {
+            this.STAGE_WIDTH = screen.availWidth;
+        }
         $('#start').show();
         $('#trial').hide();
         $('#result').hide();
+
+
 
         if ( nums != null )
         this.TRIALS_SIZE = nums;
         // 随机生成trial数据
         this.trial_set = this.getTrialSet();
         this.cur_trial_idx = -1;
+
+        // init tmp
+        for ( var i = 0;i<this.trial_set.length;i++) {
+            $('#tmp').append('<div id="tmp_' + i + '"></div>');
+        }
 
         // draw
         this.stage = new Kinetic.Stage({
@@ -69,8 +98,8 @@
                 tmp_angle = (cur_trial.rotationDeg + init_angle) % 360;
                 tmp_x = c * Math.cos( (tmp_angle%180) *Math.PI/180  ), 
                 tmp_y = c * Math.sin( (tmp_angle%180) *Math.PI/180  ),
-                x = this.STAGE_WIDTH/2 ,
-                y = this.STAGE_HEIGHT/2;
+                x = this.STAGE_WIDTH/2   ,
+                y = this.STAGE_HEIGHT/2  ;
             
             // 修正坐标值
             if ( tmp_angle >= 0 && tmp_angle <180 ) {
@@ -129,11 +158,15 @@
         // add the layer to the stage
         this.stage.add(this.layer);
 
+        this.drawTrialFrontPic();
         this.drawTrialEndPic();
 
     }
 
     Test.prototype.drawTrialEndPic = function() {
+        $('#end_pic').css('width', this.END_PIC_SIZE).css('margin-top',
+            (this.STAGE_HEIGHT - this.END_PIC_SIZE)/2);
+        /*
         // draw
         this.end_stage = new Kinetic.Stage({
             container: 'end_container',
@@ -141,8 +174,11 @@
             height: this.STAGE_HEIGHT
         });
 
-        var line_width = 20, line_height = 180,
-            line_gap = 30, x = 180, y = 50;
+        var line_width = this.END_LINE_WIDTH, 
+            line_height = this.END_LINE_HEIGHT,
+            line_gap = (line_height - line_width*3)/4,
+            x = (this.STAGE_WIDTH - line_height)/2, 
+            y = (this.STAGE_HEIGHT - line_height)/2;
 
         this.end_layer = new Kinetic.Layer();
 
@@ -156,8 +192,8 @@
 
             // 竖线
             var rectV = new Kinetic.Rect({
-                x: x + line_gap + i*(line_width + line_gap),
-                y: y,
+                x: line_gap + i*(line_width + line_gap),
+                y: 0,
                 width: line_width,
                 height: line_height,
                 fill: 'black'
@@ -166,8 +202,8 @@
 
             // 横线
             var rectH = new Kinetic.Rect({
-                x: x,
-                y: y + line_gap + i*(line_width + line_gap),
+                x: 0,
+                y: line_gap + i*(line_width + line_gap),
                 width: line_height,
                 height: line_width,
                 fill: 'black'
@@ -180,6 +216,63 @@
         
         // add the layer to the stage
         this.end_stage.add(this.end_layer);
+        */
+    }   
+
+    Test.prototype.drawTrialFrontPic = function() {
+        $('#front_pic').css('width', this.FRONT_PIC_SIZE).css('margin-top',
+            (this.STAGE_HEIGHT - this.FRONT_PIC_SIZE)/2);
+        /*
+        // draw
+        this.front_stage = new Kinetic.Stage({
+            container: 'front_container',
+            width: this.STAGE_WIDTH,
+            height: this.STAGE_HEIGHT
+        });
+
+        var line_width = this.FRONT_LINE_WIDTH, 
+            line_height = this.FRONT_LINE_HEIGHT,
+            //x = 200, 
+            //y = 50;
+            x = (this.STAGE_WIDTH - line_height)/2,
+            y = (this.STAGE_HEIGHT - line_height)/2;
+
+
+        this.front_layer = new Kinetic.Layer();
+
+            var group = new Kinetic.Group({
+                x: x ,
+                y: y ,
+                id: 'front_trial',
+                visible: true
+            });
+
+            // 竖线
+            var rectV = new Kinetic.Rect({
+                x:  line_height/2 - line_width/2,
+                y: 0,
+                width: line_width,
+                height: line_height,
+                fill: 'black'
+            });
+            group.add(rectV);
+
+            // 横线
+            var rectH = new Kinetic.Rect({
+                x: 0,
+                y:  line_height/2 - line_width/2,
+                width: line_height,
+                height: line_width,
+                fill: 'black'
+            });
+            group.add(rectH);
+
+
+            this.front_layer.add(group);
+        
+        // add the layer to the stage
+        this.front_stage.add(this.front_layer);
+        */
     }   
 
     // 随机获取set
@@ -228,7 +321,7 @@
             // step 2 blank
             test.cur_trial_step = test.TRIAL_STEP_2;
 
-            $('#container').delay(test.TRIAL_STEP_2_WAIT_TIME).show(500, function() {
+            $('#container').delay(test.TRIAL_STEP_2_WAIT_TIME).show('fast', function() {
                 // step 3 picture
                 test.cur_trial_step = test.TRIAL_STEP_3;
                 var date = new Date();
@@ -238,10 +331,10 @@
                 cur_group.show();
                 test.layer.draw();
 
-                $("#tmp").attr('idx', test.cur_trial_idx);
-                $("#tmp").delay(test.TRIAL_STEP_3_WAIT_TIME).show('fast', function() {
+                $("#tmp_" + test.cur_trial_idx ).attr('idx', test.cur_trial_idx);
+                $("#tmp_" + test.cur_trial_idx ).delay(test.TRIAL_STEP_3_WAIT_TIME).show('fast', function() {
                     // 已经不是此次
-                    if ( $("#tmp").attr('idx') != test.cur_trial_idx || 
+                    if ( $(this).attr('idx') != test.cur_trial_idx || 
                         test.cur_trial_step != test.TRIAL_STEP_3  ) return ;
                     // 超时，自动选择
                     test.trialEnd(-1);
@@ -275,7 +368,10 @@
                 // end
                 test.showResult();
             } else {
-                test.trialStart();
+                $('#tmp').delay(test.TRIAL_STEP_5_WAIT_TIME).show('fast', function() {
+                    test.trialStart();
+                });
+                
             }
         });
 
@@ -293,13 +389,13 @@
         var result_html = '';
         result_html = '<table class="table table-hover">';
         result_html += '<thead><th>次数</th>' +
-                        '<th>垂直线长度</th>' +
-                        '<th>水平线长度</th>' +
-                        '<th>线条粗细</th>' +
+                        '<th>垂直线长度(像素)</th>' +
+                        '<th>水平线长度(像素)</th>' +
+                        '<th>线条粗细(像素)</th>' +
                         '<th>线条颜色</th>' +
                         '<th>偏转角度</th>' +
                         '<th>是否中点提示</th>' +
-                        '<th>空心圆半径</th>' +
+                        '<th>空心圆半径(像素)</th>' +
                         '<th>反应键</th>' +
                         '<th>反应时(ms)</th>'+
                         '</thead>';
